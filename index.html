@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>MathPrimeCup Timer</title> Timer</title>
+    </head>
+
+    <body>
+        <p>DisplaySettime</p>
+        <p id="DisplaySettime">20:00</p>
+        <form id="InputSettime" action="#">
+            <input id="InputSettimeMin" type="number" value="20" max="59" min="0">:
+            <input id="InputSettimeSec" type="number" value="00" max="59" min="0">
+            <input id="submit_InputSettime" type="button" onclick="configSettime()" value="Set">
+        </form>
+
+        <p>DisplayHandtime</p>
+        <p id="DisplayHandtime">60</p>
+        <form id="InputHandtime" action="#">
+            <input id="InputHandtimeSec" type="number" value="60" min="1">
+            <input id="submit_InputHandtime" type="button" onclick="configHandtime()" value="Set">
+        </form>
+
+        <p>startstopTimer</p>
+        <form id="startstopTimer" action="#">
+            <input id="submit_startstopTimer" type="button" onclick="startstopTimer()" value="Start/Stop">
+        </form>
+
+        <p>resetTimer</p>
+        <form id="resetTimer" action="#">
+            <input id="submit_resetTimer" type="button" onclick="resetTimer()" value="Reset">
+        </form>
+
+        <p>startstopMiniTimer</p>
+        <form id="startstopMiniTimer" action="#">
+            <input id="submit_startstopMiniTimer" type="button" onclick="startstopMiniTimer()" value="Mini">
+        </form>
+
+        <p>resetMiniTimer30</p>
+        <form id="resetMiniTimer30" action="#">
+            <input id="submit_resetMiniTimer30" type="button" onclick="resetMiniTimer30()" value="30">
+        </form>
+ 
+        <p>resetMiniTimer60</p>
+        <form id="resetMiniTimer60" action="#">
+            <input id="submit_resetMiniTimer60" type="button" onclick="resetMiniTimer60()" value="60">
+        </form>
+
+        <p>allReset</p>
+        <form id="allReset" action="#">
+            <input id="submit_allReset" type="button" onclick="allReset()" value="allReset">
+        </form>
+
+
+
+        <script language="javascript" type="text/javascript">
+            var DefaultSettime = 1200;
+            var DefaultHandtime = 60;
+            var ThinkingTime30 = 30;
+            var ThinkingTime60 = 60;
+            
+
+            var Settime = 1200;
+            var Handtime = 60;
+
+            var DisplaySettime , DisplaySettimeMin, DisplaySettimeSec;
+            var DisplayHandtime, DisplayHandtimeSec;
+
+            var InputSettime, InputSettimeMin, InputSettimeSec;
+            var InputHandtime, InputHandtimeSec;
+
+            var Timer, runTimer = false;
+            var MiniTimer, runMiniTimer = false;
+
+            // timer
+            const CountDown = () => {
+                
+                Handtime--;
+
+                if(Settime > 0) {
+                    Settime--;
+                }
+
+                DisplaySettimeMin = Math.floor(Settime/60) >= 10 ? Math.floor(Settime/60) : "0" + Math.floor(Settime/60);
+                DisplaySettimeSec = Settime%60 >= 10 ? Settime%60 : "0" + Settime%60;
+                DisplayHandtimeSec = Handtime >= 10 ? Handtime : "0" + Handtime;
+
+                DisplaySettime = DisplaySettimeMin + ":" + DisplaySettimeSec;
+                document.getElementById("DisplaySettime").innerHTML = DisplaySettime;
+                DisplayHandtime = DisplayHandtimeSec;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+            }
+
+            const MiniCountDown = () => {
+                
+                Handtime--;
+
+                DisplayHandtimeSec = Handtime >= 10 ? Handtime : "0" + Handtime;
+
+                DisplayHandtime = DisplayHandtimeSec;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+            }
+
+
+
+            // button
+            // enable/disable
+            const TimerEnable = () => {
+                runTimer = true;
+
+                document.getElementById("InputSettimeMin").disabled = true;
+                document.getElementById("InputSettimeSec").disabled = true;
+                document.getElementById("submit_InputSettime").disabled = true;
+                document.getElementById("InputHandtimeSec").disabled = true;
+                document.getElementById("submit_InputHandtime").disabled = true;
+                document.getElementById("submit_resetTimer").disabled = true;
+                document.getElementById("submit_startstopMiniTimer").disabled = true;
+                document.getElementById("submit_resetMiniTimer30").disabled = true;
+                document.getElementById("submit_resetMiniTimer60").disabled = true;
+                document.getElementById("submit_allReset").disabled = true;
+
+                return;
+            }
+
+            const TimerDisable = () => {
+                runTimer = false;
+
+                document.getElementById("InputSettimeMin").disabled = false;
+                document.getElementById("InputSettimeSec").disabled = false;
+                document.getElementById("submit_InputSettime").disabled = false;
+                document.getElementById("InputHandtimeSec").disabled = false;
+                document.getElementById("submit_InputHandtime").disabled = false;
+                document.getElementById("submit_resetTimer").disabled = false;
+                document.getElementById("submit_startstopMiniTimer").disabled = false;
+                document.getElementById("submit_resetMiniTimer30").disabled = false;
+                document.getElementById("submit_resetMiniTimer60").disabled = false;
+                document.getElementById("submit_allReset").disabled = false;
+
+                return;
+            }
+
+            // Timer
+            const startstopTimer = () => {
+                // stop
+                if (runTimer) {
+                    TimerDisable();
+
+
+                // start
+                } else {
+                    TimerEnable();
+
+                }
+
+                clearInterval(Timer);
+                console.log("[DEBUG]Timer: " + runTimer)
+
+                Timer = setInterval(function () {
+                    if (Handtime <= 0 || runTimer == false) {
+                        clearInterval(Timer);
+                        TimerDisable();
+
+
+                    } else {
+                        CountDown();
+                    }
+                }, 1000);
+            
+                return;
+            }
+
+            const resetTimer = () => {
+
+                Handtime = DefaultHandtime;
+                DisplayHandtime = Handtime;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+
+            }
+
+
+            // MiniTimer
+
+            // button
+            // enable/disable
+            const MiniTimerEnable = () => {
+                runMiniTimer = true;
+
+                document.getElementById("InputSettimeMin").disabled = true;
+                document.getElementById("InputSettimeSec").disabled = true;
+                document.getElementById("submit_InputSettime").disabled = true;
+                document.getElementById("InputHandtimeSec").disabled = true;
+                document.getElementById("submit_InputHandtime").disabled = true;
+                document.getElementById("submit_resetTimer").disabled = true;
+                document.getElementById("submit_startstopTimer").disabled = true;
+                document.getElementById("submit_resetMiniTimer30").disabled = true;
+                document.getElementById("submit_resetMiniTimer60").disabled = true;
+                document.getElementById("submit_allReset").disabled = true;
+
+
+                return;
+            }
+
+            const MiniTimerDisable = () => {
+                runMiniTimer = false;
+
+                document.getElementById("InputSettimeMin").disabled = false;
+                document.getElementById("InputSettimeSec").disabled = false;
+                document.getElementById("submit_InputSettime").disabled = false;
+                document.getElementById("InputHandtimeSec").disabled = false;
+                document.getElementById("submit_InputHandtime").disabled = false;
+                document.getElementById("submit_resetTimer").disabled = false;
+                document.getElementById("submit_startstopTimer").disabled = false;
+                document.getElementById("submit_resetMiniTimer30").disabled = false;
+                document.getElementById("submit_resetMiniTimer60").disabled = false;
+                document.getElementById("submit_allReset").disabled = false;
+
+                return;
+            }
+
+            // timer
+            const startstopMiniTimer = () => {
+                // stop
+                if (runMiniTimer) {
+                    MiniTimerDisable();
+
+                // start
+                } else {
+                    MiniTimerEnable();
+                }
+
+                clearInterval(MiniTimer);
+                console.log("[DEBUG]MiniTimer: " + runMiniTimer)
+
+                MiniTimer = setInterval(function () {
+                    if (Handtime <= 0 || runMiniTimer == false) {
+                        clearInterval(MiniTimer);
+                        MiniTimerDisable();
+
+
+                    } else {
+                        MiniCountDown();
+                    }
+                }, 1000);
+            
+                return;
+            }
+
+            const resetMiniTimer30 = () => {
+
+                Handtime = ThinkingTime30;
+                DisplayHandtime = Handtime;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+
+            }
+
+            const resetMiniTimer60 = () => {
+
+                Handtime = ThinkingTime60;
+                DisplayHandtime = Handtime;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+
+            }
+
+
+            // configTimer
+            const configSettime = () => {
+
+                InputSettimeMin = document.getElementById("InputSettimeMin").value;
+                InputSettimeSec = document.getElementById("InputSettimeSec").value;
+
+                Settime = Number(InputSettimeMin)*60 + Number(InputSettimeSec);
+                console.log("[DEBUG]Settime: "+ Settime);
+
+                DisplaySettimeMin = Number(InputSettimeMin) >= 10 ? InputSettimeMin : "0" + InputSettimeMin;
+                DisplaySettimeSec = Number(InputSettimeSec) >= 10 ? InputSettimeSec : "0" + InputSettimeSec;
+
+                DisplaySettime = DisplaySettimeMin + ":" + DisplaySettimeSec;
+                document.getElementById("DisplaySettime").innerHTML = DisplaySettime;
+            
+                return;
+            }
+
+            const configHandtime = () => {
+
+                InputHandtimeSec = document.getElementById("InputHandtimeSec").value;
+                
+                Handtime = Number(InputHandtimeSec);
+                console.log("[DEBUG]Handtime: " + Handtime);
+
+                DisplayHandtimeSec = Number(InputHandtimeSec) >= 10 ? InputHandtimeSec : "0" + InputHandtimeSec;
+
+                DisplayHandtime = DisplayHandtimeSec;
+                document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+
+                return;
+            }
+
+            // allReset
+            const allReset = () => {
+                if (window.confirm('Set開始時の状態に戻しますか')) {
+                    Settime = DefaultSettime;
+                    Handtime = DefaultHandtime;
+
+                    console.log("[DEBUG]Settime: "+ Settime);
+                    console.log("[DEBUG]Handtime: " + Handtime);
+
+                    DisplaySettimeMin = Math.floor(Settime/60) >= 10 ? Math.floor(Settime/60) : "0" + Math.floor(Settime/60);
+                    DisplaySettimeSec = Settime%60 >= 10 ? Settime%60 : "0" + Settime%60;
+                    DisplayHandtimeSec = Handtime >= 10 ? Handtime : "0" + Handtime;
+
+                    DisplaySettime = DisplaySettimeMin + ":" + DisplaySettimeSec;
+                    DisplayHandtime = DisplayHandtimeSec;
+
+                    document.getElementById("DisplaySettime").innerHTML = DisplaySettime;
+                    document.getElementById("DisplayHandtime").innerHTML = DisplayHandtime;
+
+                    alert('Set開始時の状態に戻しました')
+                }
+            }
+
+
+        </script>
+    </body>
+</html>
